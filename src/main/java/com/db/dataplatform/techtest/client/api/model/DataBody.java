@@ -4,12 +4,14 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotNull;
 
 @JsonSerialize(as = DataBody.class)
 @JsonDeserialize(as = DataBody.class)
 @Getter
+@NoArgsConstructor
 @AllArgsConstructor
 public class DataBody {
 

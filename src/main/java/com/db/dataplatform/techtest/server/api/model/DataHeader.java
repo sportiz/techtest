@@ -21,6 +21,6 @@ public class DataHeader {
 
     private BlockTypeEnum blockType;
 
-    private byte[] dataCheckSum;
+    private String dataCheckSum;
 
 }

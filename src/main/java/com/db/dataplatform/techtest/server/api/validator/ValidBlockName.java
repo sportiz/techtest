@@ -6,17 +6,16 @@ import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.ElementType.PARAMETER;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
-@Constraint(validatedBy = CheckSumValidator.class)
+@Constraint(validatedBy = BlockNameValidator.class)
 @Target({ PARAMETER })
 @Retention(RUNTIME)
 @Documented
-public @interface ValidChecksum {
+public @interface ValidBlockName {
 
-        String message() default "MD5 check sum provided in the client should match to generated one.";
+        String message() default "Block name should be valid";
 
         Class<?>[] groups() default {};
 

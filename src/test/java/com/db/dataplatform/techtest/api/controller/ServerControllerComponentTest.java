@@ -5,6 +5,8 @@ import com.db.dataplatform.techtest.server.api.controller.ServerController;
 import com.db.dataplatform.techtest.server.api.model.DataEnvelope;
 import com.db.dataplatform.techtest.server.exception.HadoopClientException;
 import com.db.dataplatform.techtest.server.component.Server;
+import com.db.dataplatform.techtest.server.persistence.BlockTypeEnum;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Before;
 import org.junit.Test;
@@ -19,10 +21,16 @@ import org.springframework.web.util.UriTemplate;
 
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
 
+import static com.db.dataplatform.techtest.TestDataHelper.TEST_NAME;
+import static com.db.dataplatform.techtest.server.persistence.BlockTypeEnum.BLOCKTYPEA;
+import static com.db.dataplatform.techtest.server.persistence.BlockTypeEnum.BLOCKTYPEB;
+import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -54,6 +62,8 @@ public class ServerControllerComponentTest {
 		testDataEnvelope = TestDataHelper.createTestDataEnvelopeApiObject();
 
 		when(serverMock.saveDataEnvelope(any(DataEnvelope.class))).thenReturn(true);
+		when(serverMock.findDataEnvelopeByBlockType(any(BlockTypeEnum.class))).thenReturn(asList(testDataEnvelope));
+		doNothing().when(serverMock).updateDataBlockName(any(), any());
 	}
 
 	@Test
@@ -70,4 +80,29 @@ public class ServerControllerComponentTest {
 		boolean checksumPass = Boolean.parseBoolean(mvcResult.getResponse().getContentAsString());
 		assertThat(checksumPass).isTrue();
 	}
+
+	@Test
+	public void testGetDataByBlockTypeAsExpected() throws Exception {
+
+		MvcResult mvcResult = mockMvc.perform(get(URI_GETDATA.toString().replace("{blockType}", BLOCKTYPEA.name()))
+						.contentType(MediaType.APPLICATION_JSON_VALUE))
+				.andExpect(status().isOk())
+				.andReturn();
+		List<DataEnvelope> result = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), new TypeReference<List<DataEnvelope>>() {
+		});
+
+		assertEquals(TestDataHelper.DUMMY_DATA, result.get(0).getDataBody().getDataBody());
+	}
+
+	@Test
+	public void testUpdateBlockAsExpected() throws Exception {
+
+		MvcResult mvcResult = mockMvc.perform(post(URI_PATCHDATA.toString().replace("{name}", TEST_NAME).replace("{newBlockType}", BLOCKTYPEB.name()))
+						.contentType(MediaType.APPLICATION_JSON_VALUE))
+				.andExpect(status().isOk())
+				.andReturn();
+
+		verify(serverMock, times(1)).updateDataBlockName(any(), any());
+	}
+
 }

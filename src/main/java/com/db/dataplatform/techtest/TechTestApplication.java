@@ -14,11 +14,9 @@ import org.springframework.context.event.EventListener;
 import org.springframework.retry.annotation.EnableRetry;
 
 import java.io.UnsupportedEncodingException;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import static com.db.dataplatform.techtest.Constant.DUMMY_DATA;
-import static com.db.dataplatform.techtest.Constant.DUMMY_DATA_CHECKSUM;
 
 @SpringBootApplication
 @EnableRetry
@@ -57,7 +55,7 @@ public class TechTestApplication {
 
 		DataBody dataBody = new DataBody(DUMMY_DATA);
 
-		DataHeader dataHeader = new DataHeader(HEADER_NAME, BlockTypeEnum.BLOCKTYPEA, DUMMY_DATA_CHECKSUM);
+		DataHeader dataHeader = new DataHeader(HEADER_NAME, BlockTypeEnum.BLOCKTYPEA, MD5_CHECKSUM);
 
 		DataEnvelope dataEnvelope = new DataEnvelope(dataHeader, dataBody);
 

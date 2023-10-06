@@ -3,6 +3,7 @@ package com.db.dataplatform.techtest.client;
 import lombok.RequiredArgsConstructor;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,6 +21,7 @@ public class RestTemplateConfiguration {
     private final RestTemplateBuilder restTemplateBuilder;
 
     @Bean
+    @Qualifier("clientRestTemplate")
     public RestTemplate createRestTemplate(MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter,
                                            StringHttpMessageConverter stringHttpMessageConverter) {
 
